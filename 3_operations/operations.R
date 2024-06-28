@@ -1,3 +1,5 @@
+setwd("3_operations/") # Change working directory to lesson 3
+
 # SEARCHING ####
 
 # Create a character vector for searching.
@@ -31,8 +33,8 @@ Sys.sleep(1) # Simulate a delay
 end <- proc.time()
 
 # Calculate elapsed time
-elapsed_time <- end - start
-cat(sprintf("Execution took %.2f seconds.\n", elapsed_time[3])) # formatted
+elapsed_time <- end[3] - start[3]
+cat(sprintf("Execution took %.2f seconds.\n", elapsed_time)) # formatted
 
 # Loops vs non-loops ####
 data <- rnorm(10000000) # vector of random doubles from normal distribution
@@ -43,13 +45,13 @@ for (i in 1:length(data)) {
   data[i] <- data[i] + 1
 }
 end <- proc.time()
-cat("Loop execution time: ", end - start, "\n")
+cat("Loop execution time: ", end[3] - start[3], "\n")
 
 # Using vectorized operation
 start <- proc.time()
 data <- data + 1 # ~50 times faster
 end <- proc.time()
-cat("Vectorized operation time: ", end - start, "\n")
+cat("Vectorized operation time: ", end[3] - start[3], "\n")
 
 # I/O ####
 # read.table ####
@@ -59,7 +61,7 @@ if (file.exists(file_path)) {
   datatable <- read.table(file_path, header = FALSE, sep = "\t", 
                           col.names = c("Node1", "Node2", "Weight"), stringsAsFactors = FALSE)
   end <- proc.time()
-  cat("Reading table execution time: ", end - start, "\n")
+  cat("Reading table execution time: ", end[3] - start[3], "\n")
   
   # Display data frame information
   print(class(datatable))
@@ -71,36 +73,30 @@ if (file.exists(file_path)) {
 
 # readLines ####
 con <- file(file_path, "r")
-if (con) {
-  first_line <- readLines(con, 1)
-  cat("First line of file: ", first_line, "\n")
-  close(con)
-} else {
-  cat("File not found: ", file_path, "\n")
-}
+first_line <- readLines(con, 1)
+cat("First line of file: ", first_line, "\n")
+close(con)
 
 # match vs which vs grep benchmarking example ####
-if (exists("datatable")) {
-  search_value <- "YPR203W"
-  
-  # Using match
-  start <- proc.time()
-  match(search_value, datatable$Node1) # fast
-  end <- proc.time()
-  cat("Match execution time: ", end - start, "\n")
-  
-  # Using which
-  start <- proc.time()
-  which(datatable$Node1 %in% search_value) # slow
-  end <- proc.time()
-  cat("Which execution time: ", end - start, "\n")
-  
-  # Using grep
-  start <- proc.time()
-  grep(search_value, datatable$Node1) # slower
-  end <- proc.time()
-  cat("Grep execution time: ", end - start, "\n")
-}
+search_value <- "YPR203W"
+
+# Using match
+start <- proc.time()
+match(search_value, datatable$Node1) # fast
+end <- proc.time()
+cat("Match execution time: ", end[3] - start[3], "\n")
+
+# Using which
+start <- proc.time()
+which(datatable$Node1 %in% search_value) # slow
+end <- proc.time()
+cat("Which execution time: ", end[3] - start[3], "\n")
+
+# Using grep
+start <- proc.time()
+grep(search_value, datatable$Node1) # slower
+end <- proc.time()
+cat("Grep execution time: ", end[3] - start[3], "\n")
 
 # Save/Load Objects ####
 saveRDS(datatable, "datatable.rds") # R object, non-readable format
@@ -108,7 +104,7 @@ saveRDS(datatable, "datatable.rds") # R object, non-readable format
 start <- proc.time()
 loaded_datatable <- readRDS("datatable.rds") # still, faster than read.table
 end <- proc.time()
-cat("Reading RDS execution time: ", end - start, "\n")
+cat("Reading RDS execution time: ", end[3] - start[3], "\n")
 
 # write.table ####
 write.table(loaded_datatable, "loaded_datatable.csv", sep=",", col.names = FALSE, row.names = FALSE, quote = FALSE)
@@ -128,7 +124,7 @@ for (i in 1:1000){
   df <- rbind(df, datatable[i,])
 }
 end <- proc.time()
-cat("Rbind execution time: ", end - start, "\n")
+cat("Rbind execution time: ", end[3] - start[3], "\n")
 
 # Using I/O
 start <- proc.time()
@@ -140,7 +136,7 @@ close(con)
 df2 <- read.table("outTable.txt", header = FALSE, sep = "\t", 
                   col.names = c("Node1", "Node2", "Weight"), stringsAsFactors = FALSE)
 end <- proc.time()
-cat("I/O execution time: ", end - start, "\n")
+cat("I/O execution time: ", end[3] - start[3], "\n")
 
 # PARSING - gsub ####
 # Function that parses user text, separating data by commas, spaces, tabs, carriage returns and new lines
